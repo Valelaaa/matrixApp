@@ -5,7 +5,8 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    val matrixFragment: MatrixFragment = MatrixFragment.newInstance()
+    @Inject
+    private lateinit var matrixFragment: MatrixFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
