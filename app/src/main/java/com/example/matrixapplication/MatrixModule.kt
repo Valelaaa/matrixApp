@@ -9,4 +9,5 @@ class MatrixModule {
     fun provideDefaultInputMatrix(): InputMatrix {
         return InputMatrix(20, 20)
     }
+
 }

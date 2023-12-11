@@ -4,8 +4,9 @@ import android.util.Log
 import javax.inject.Singleton
 
 @Singleton
-class InputMatrix(private val columns: Int = 10, private val rows: Int = 10) {
+class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
     private var matrix: Array<IntArray> = Array(rows) { IntArray(columns) { 0 } }
+
     init {
         initializeMatrix()
     }
@@ -27,13 +28,20 @@ class InputMatrix(private val columns: Int = 10, private val rows: Int = 10) {
     }
 
 
-    fun refresh(): InputMatrix {
-        Log.d("InputMatrix","Refreshing matrix")
-        val newMatrix = InputMatrix(columns,rows)
+    fun createNewInstance(): InputMatrix {
+        Log.d("InputMatrix", "Refreshing matrix")
+        val newMatrix = InputMatrix(columns, rows)
         newMatrix.initializeMatrix()
         return newMatrix
     }
 
-    fun getMatrix(): Array<IntArray> = matrix.clone()
+    fun getData(): Array<IntArray> = matrix
+    override fun toString(): String {
+        return matrix.joinToString(separator = "\n") {
+            it.joinToString(", "){
+                "$it"
+            }
+        }
+    }
 
 }

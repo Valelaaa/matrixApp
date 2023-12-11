@@ -12,5 +12,6 @@ interface MatrixComponent {
     }
     fun inject(activity:MainActivity)
     fun inject(fragment:MatrixFragment)
-    fun getMatrix(): InputMatrix
+    fun getMatrixViewModel():MatrixViewModel
+
 }

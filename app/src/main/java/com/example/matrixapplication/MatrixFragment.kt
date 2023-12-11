@@ -1,19 +1,22 @@
 package com.example.matrixapplication
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.matrixapplication.databinding.FragmentMatrixBinding
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragment() {
+class MatrixFragment : Fragment() {
+    private val viewModel: MatrixViewModel =
+        (requireActivity() as MainActivity).appComponent.viewModelsFactory()
+    private var _binder: FragmentMatrixBinding? = null
+    private val binder: FragmentMatrixBinding
+        get() = _binder!!
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity() as MainActivity).appComponent.inject(this)
@@ -24,20 +27,33 @@ class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragm
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_matrix, container, false)
-        val loggingView: TextView = view.findViewById(R.id.logging_view)
-        val refreshButton: Button = view.findViewById(R.id.refresh_matrix)
-        var loggingText = StringBuilder("")
+        _binder = FragmentMatrixBinding.inflate(layoutInflater)
 
         lifecycleScope.launch {
-            matrixTableView(viewModel, view, requireContext())
+            viewModel.matrixDataFlow.collect {
+                matrixTableView(it,binder.matrixTable, requireContext())
+            }
         }
-        refreshButton.setOnClickListener {
+        lifecycleScope.launch {
+            viewModel.matrixDataFlow.collect {
+                println(it)
+            }
+        }
+
+        binder.refreshMatrix.setOnClickListener {
             viewModel.refreshMatrix()
+            lifecycleScope.launch {
+                viewModel.matrixDataFlow.collect {
+                    updateMatrixTableView(it, binder.matrixTable, requireContext())
+                }
+            }
         }
-        loggingView.text = loggingText
-        loggingText.append(viewModel.logsText)
-        return view
+        return binder.root
+    }
+
+    override fun onDestroyView() {
+        _binder = null
+        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
