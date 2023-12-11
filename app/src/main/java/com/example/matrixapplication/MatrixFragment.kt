@@ -1,7 +1,9 @@
 package com.example.matrixapplication
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,26 +11,36 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import javax.inject.Inject
 
-class MatrixFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = MatrixFragment()
+class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragment() {
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity() as MainActivity).appComponent.inject(this)
     }
-
-    private lateinit var viewModel: MatrixViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_matrix, container, false)
 
         val loggingView: TextView = view.findViewById(R.id.logging_view)
         var logingText = StringBuilder("")
         val matrixTable: TableLayout = view.findViewById(R.id.matrix_table)
-        val rowsCount = 101
-        val columnsCount = 101
+
+        var rowsCount = 0
+        var columnsCount = 0
+        viewModel.matrixLiveData.observe(viewLifecycleOwner) { inputMatrix ->
+            if (inputMatrix != null) {
+                val matrix = inputMatrix.getMatrix()
+                rowsCount = matrix.size
+                columnsCount = if (matrix.isNotEmpty()) matrix[0].size else 0
+
+                Log.d("MainApplication", "rows: $rowsCount columns: $columnsCount")
+            }
+        }
         for (i in 0 until rowsCount) {
             val tableRow = TableRow(requireContext())
 
@@ -53,7 +65,6 @@ class MatrixFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MatrixViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
