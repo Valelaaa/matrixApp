@@ -1,14 +1,14 @@
 package com.example.matrixapplication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class MatrixViewModel @Inject constructor(var matrixRepository:MatrixRepository) {
-    val matrixLiveData: LiveData<InputMatrix> = matrixRepository.getMatrix().asLiveData()
+    val matrixLiveData = matrixRepository.getMatrix()
+    var rows:Int = 0
+    var columns:Int = 0
 
+    var logsText:StringBuilder = StringBuilder()
     fun refreshMatrix(){
         matrixRepository.refresh()
     }

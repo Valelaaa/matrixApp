@@ -25,31 +25,39 @@
                 android:text="@string/matrix"
                 android:textAlignment="center" />
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/border"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="10dp"
-                android:fillViewport="true"
-                android:scrollbars="none">
+                >
 
-                <HorizontalScrollView
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="2dp"
                     android:fillViewport="true"
                     android:scrollbars="none">
 
-                    <TableLayout
-                        android:id="@+id/matrix_table"
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        android:scrollbars="none">
+
+                        <TableLayout
+                            android:id="@+id/matrix_table"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
 
-                        <!--                Table Rows and Table Emelents-->
+                            <!--                Table Rows and Table Emelents-->
 
-                    </TableLayout>
-                </HorizontalScrollView>
-            </ScrollView>
+                        </TableLayout>
+                    </HorizontalScrollView>
+                </ScrollView>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

@@ -2,14 +2,14 @@ package com.example.matrixapplication
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
-import android.widget.TableRow
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragment() {
@@ -24,41 +24,18 @@ class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragm
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_matrix, container, false)
-
         val loggingView: TextView = view.findViewById(R.id.logging_view)
-        var logingText = StringBuilder("")
-        val matrixTable: TableLayout = view.findViewById(R.id.matrix_table)
+        val refreshButton: Button = view.findViewById(R.id.refresh_matrix)
+        var loggingText = StringBuilder("")
 
-        var rowsCount = 0
-        var columnsCount = 0
-        viewModel.matrixLiveData.observe(viewLifecycleOwner) { inputMatrix ->
-            if (inputMatrix != null) {
-                val matrix = inputMatrix.getMatrix()
-                rowsCount = matrix.size
-                columnsCount = if (matrix.isNotEmpty()) matrix[0].size else 0
-
-                Log.d("MainApplication", "rows: $rowsCount columns: $columnsCount")
-            }
+        lifecycleScope.launch {
+            matrixTableView(viewModel, view, requireContext())
         }
-        for (i in 0 until rowsCount) {
-            val tableRow = TableRow(requireContext())
-
-            for (j in 0 until columnsCount) {
-                val textView = TextView(requireContext())
-                textView.text = "[$i][$j]" // Здесь можно задать текст по умолчанию
-                logingText.append("[$i][$j]")
-                textView.setPadding(20, 10, 10, 10) // Установим отступы
-                textView.setBackgroundResource(R.drawable.border)
-                // Добавим TextView в TableRow
-                tableRow.addView(textView)
-            }
-
-            // Добавим TableRow в TableLayout
-            matrixTable.addView(tableRow)
+        refreshButton.setOnClickListener {
+            viewModel.refreshMatrix()
         }
-
-        loggingView.text = logingText
-
+        loggingView.text = loggingText
+        loggingText.append(viewModel.logsText)
         return view
     }
 

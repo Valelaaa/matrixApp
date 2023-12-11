@@ -6,7 +6,7 @@ import dagger.Provides
 @Module
 class MatrixModule {
     @Provides
-    fun provideDefaultInputMatrix(): InputMatrix{
-        return InputMatrix()
+    fun provideDefaultInputMatrix(): InputMatrix {
+        return InputMatrix(20, 20)
     }
 }
