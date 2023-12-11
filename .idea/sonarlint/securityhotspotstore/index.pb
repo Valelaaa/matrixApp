@@ -1,0 +1,25 @@
+
+@
+build.gradle.kts,d\b\dbcff70658daf80b53ce624f6adcaa529df5ed8d
+9
+	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+C
+settings.gradle.kts,7\4\749edfcc96398253e5b3416184e95c46621da850
+o
+?app/src/main/java/com/example/matrixapplication/MainActivity.kt,5\d\5d9b517574cfd87c788150a909fb8b39b4823539
+q
+Aapp/src/main/java/com/example/matrixapplication/MatrixFragment.kt,c\7\c7e5f080a2346bcf3ee429a48ef3043a37253b5e
+D
+app/build.gradle.kts,d\2\d2a4383452aad84a18429a5844d31330a012a9e6
+r
+Bapp/src/main/java/com/example/matrixapplication/MatrixViewModel.kt,1\4\144f83e781b87508572eb026b9b144a5a67da7f7
+s
+Capp/src/main/java/com/example/matrixapplication/MatrixRepository.kt,0\a\0a3aadb6d81abac1a5f76c4d01420dbfb9ecec40
+n
+>app/src/main/java/com/example/matrixapplication/InputMatrix.kt,9\5\958c87840b12725d9202a783defbd89f0e721348
+r
+Bapp/src/main/java/com/example/matrixapplication/MatrixComponent.kt,3\1\31466ce6e3679372497635dfe92dd567203d0662
+o
+?app/src/main/java/com/example/matrixapplication/MatrixModule.kt,1\2\12bffb52c64ce9dafed189aafc40a9279be0b5b4
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
