@@ -12,4 +12,3 @@ class MatrixViewModel @Inject constructor(var matrixRepository:MatrixRepository)
     fun refreshMatrix(){
         matrixRepository.refresh()
     }
-}
