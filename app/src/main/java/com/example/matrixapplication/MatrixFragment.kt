@@ -1,16 +1,15 @@
 package com.example.matrixapplication
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import javax.inject.Inject
 
 class MatrixFragment @Inject constructor(var viewModel: MatrixViewModel) : Fragment() {
