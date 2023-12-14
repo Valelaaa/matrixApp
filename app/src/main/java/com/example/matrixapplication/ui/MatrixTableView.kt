@@ -1,10 +1,11 @@
-package com.example.matrixapplication
+package com.example.matrixapplication.ui
 
 import android.content.Context
-import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import com.example.matrixapplication.R
+import com.example.matrixapplication.domain.InputMatrix
 
 fun matrixTableView(
     matrix: InputMatrix,

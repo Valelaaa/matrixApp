@@ -55,6 +55,13 @@ android {
 }
 
 dependencies {
+//    implementation("com.google.android.ads:mediation-test-suite:3.0.0")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // For control over item selection of both touch and mouse driven selection
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+    implementation("androidx.fragment:fragment-ktx:1.1.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     var dagger_version = "2.49"
     implementation("com.google.dagger:dagger:$dagger_version")
     kapt("com.google.dagger:dagger-compiler:$dagger_version")

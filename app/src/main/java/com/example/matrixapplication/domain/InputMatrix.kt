@@ -1,13 +1,15 @@
-package com.example.matrixapplication
+package com.example.matrixapplication.domain
 
 import android.util.Log
 import javax.inject.Singleton
 
 @Singleton
 class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
+    private val tag = "InputMatrix"
     private var matrix: Array<IntArray> = Array(rows) { IntArray(columns) { 0 } }
 
     init {
+        Log.d(tag, "New instance of Input Matrix created ${this.getReference()}")
         initializeMatrix()
     }
 
@@ -28,13 +30,6 @@ class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
     }
 
 
-    fun createNewInstance(): InputMatrix {
-        Log.d("InputMatrix", "Refreshing matrix")
-        val newMatrix = InputMatrix(columns, rows)
-        newMatrix.initializeMatrix()
-        return newMatrix
-    }
-
     fun getData(): Array<IntArray> = matrix
     override fun toString(): String {
         return matrix.joinToString(separator = "\n") {
@@ -42,6 +37,10 @@ class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
                 "$it"
             }
         }
+        return ""
+    }
+    private fun getReference():String{
+       return Integer.toHexString(System.identityHashCode(this))
     }
 
 }
