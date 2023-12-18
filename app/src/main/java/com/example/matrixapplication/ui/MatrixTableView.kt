@@ -13,10 +13,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.matrixapplication.R
+import com.example.matrixapplication.databinding.RecycleViewLotofCustomTextviewItemBinding
 import com.example.matrixapplication.databinding.RecycleViewLotofTextviewItemBinding
 import com.example.matrixapplication.domain.InputMatrix
 import com.example.matrixapplication.ui.PrimaryRVAdaptor.ConstraintRowHolder
-import java.lang.StringBuilder
 
 private const val NUMBER_SEPARATOR = " "
 private val BACKGROUND_COLOR = 0xFFFFFFFF.toInt()
@@ -44,9 +44,14 @@ fun setSpannableString(matrix: IntArray): CharSequence {
 
     val rawString = matrix.joinToString(NUMBER_SEPARATOR) {
         val spStr = SpannableString(it.toString())
-        spStr.setSpan(ForegroundColorSpan(FONT_COLOR),0,it.toString().length,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        spStr.setSpan(
+            ForegroundColorSpan(FONT_COLOR),
+            0,
+            it.toString().length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
 
-        spStr.padStart(5,tempSeparator)
+        spStr.padStart(5, tempSeparator)
 //        it.toString().padStart(5, tempSeparator)
     }
     val sb = SpannableStringBuilder(rawString)
@@ -62,7 +67,12 @@ fun setSpannableString(matrix: IntArray): CharSequence {
                 p2++
             } else {
                 // set black color
-                sb.setSpan(ForegroundColorSpan(FONT_COLOR), p2, p1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                sb.setSpan(
+                    ForegroundColorSpan(FONT_COLOR),
+                    p2,
+                    p1,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
                 p2 = p1
             }
         } else {
@@ -70,7 +80,12 @@ fun setSpannableString(matrix: IntArray): CharSequence {
                 p1++
             } else {
                 // set white color
-                sb.setSpan(ForegroundColorSpan(BACKGROUND_COLOR), p1, p2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                sb.setSpan(
+                    ForegroundColorSpan(BACKGROUND_COLOR),
+                    p1,
+                    p2,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
                 p1 = p2
             }
         }
@@ -158,10 +173,29 @@ private class TextViewImplementation(private val binding: RecycleViewLotofTextvi
     }
 }
 
+private class CustomViewImplementation(private val binding: RecycleViewLotofCustomTextviewItemBinding) :
+    ConstraintRowHolder(binding.root) {
+    override fun bind(array: IntArray) {
+        binding.recycleViewCustomTextviewItem.setLine(array)
+    }
+}
+
 private val factory = object : ConstraintRowHolder.Factory {
+
     override fun create(view: ViewGroup, viewType: Int): ConstraintRowHolder =
         TextViewImplementation(
             RecycleViewLotofTextviewItemBinding.inflate(
+                LayoutInflater.from(view.context),
+                view,
+                false
+            )
+        )
+}
+
+private val factory2 = object : ConstraintRowHolder.Factory {
+    override fun create(view: ViewGroup, viewType: Int): ConstraintRowHolder =
+        CustomViewImplementation(
+            RecycleViewLotofCustomTextviewItemBinding.inflate(
                 LayoutInflater.from(view.context),
                 view,
                 false
@@ -175,16 +209,13 @@ internal fun updateMatrixTableView(
     recyclerView: RecyclerView,
     context: Context
 ) {
-
-    recyclerView.removeAllViews()
-//    val rVAdapter = RVAdapter(matrix)
-
-
-    val rVAdapter = PrimaryRVAdaptor(matrix, factory = factory)
-    val linearLayoutManager = LinearLayoutManager(context)
-    recyclerView.layoutManager = linearLayoutManager
-    recyclerView.adapter = rVAdapter
-
+    if (recyclerView.adapter == null) {
+        val rVAdapter = PrimaryRVAdaptor(factory = factory2)
+        val linearLayoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.adapter = rVAdapter
+    }
+    (recyclerView.adapter as? PrimaryRVAdaptor)?.submitList(matrix.getData().asList())
 }
 
 fun updateMatrixTableView(
