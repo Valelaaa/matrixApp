@@ -1,54 +1,52 @@
 package com.example.matrixapplication.ui
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.matrixapplication.databinding.FragmentMatrixBinding
+import com.example.matrixapplication.databinding.RecyclerviewFragmentMultitextviewBinding
 import com.example.matrixapplication.di.matrix.MatrixComponentProvider
 import dagger.Lazy
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-class MatrixFragment : Fragment() {
-    private val tag = "MatrixFragment"
-
+class MatrixRecyclerConstraintFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: Lazy<ViewModelProvider.Factory>
 
 
     private val viewModel: MatrixViewModel by viewModels { viewModelFactory.get() }
 
-    private var _binder: FragmentMatrixBinding? = null
-    private val binder: FragmentMatrixBinding
+    private var _binder: RecyclerviewFragmentMultitextviewBinding? = null
+    private val binder: RecyclerviewFragmentMultitextviewBinding
         get() = _binder!!
+
 
     override fun onAttach(context: Context) {
         (context as? MatrixComponentProvider)?.provideAppComponent()?.inject(this)
-            ?: throw IllegalStateException("Provide Component")
+            ?: throw IllegalStateException(
+                "Illegal State onAttach MatrixRecyclerConstraintFragment inject" +
+                        "(provide component)"
+            )
         super.onAttach(context)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binder = FragmentMatrixBinding.inflate(layoutInflater)
+        _binder = RecyclerviewFragmentMultitextviewBinding.inflate(layoutInflater)
 
         displayMatrix()
-
         binder.refreshMatrix.setOnClickListener {
             viewModel.refreshMatrix()
             displayMatrix()
@@ -67,19 +65,18 @@ class MatrixFragment : Fragment() {
             lifecycleScope.launch {
                 val startTime: Long = System.currentTimeMillis()
                 viewModel.matrixDataFlow.collect {
-                    updateMatrixTableView(it, binder.matrixTable, requireContext())
+                    updateMatrixTableView(it, binder.matrixRecyclerView, requireContext())
                 }
                 val endTime: Long = System.currentTimeMillis()
-                Log.d(tag,"Matrix Creation Time:: " +(startTime - endTime).toString())
+                Log.d(tag, "Matrix Creation Time:: " + (startTime - endTime).toString())
             }
         }
         Log.d(tag, timedValue.duration.toString())
-
     }
 
     companion object {
         fun newInstance(): Fragment {
-            return MatrixFragment()
+            return MatrixRecyclerConstraintFragment()
         }
     }
 }

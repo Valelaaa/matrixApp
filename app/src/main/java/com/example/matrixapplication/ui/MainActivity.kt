@@ -39,7 +39,10 @@ class MainActivity : AppCompatActivity(), MatrixComponentProvider {
         printLog( "After AppComponent")
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_frame, MatrixFragment.newInstance())
+            .add(R.id.fragment_frame,
+//                MatrixFragment.newInstance()
+                MatrixRecyclerConstraintFragment.newInstance()
+            )
             .commit()
 
     }

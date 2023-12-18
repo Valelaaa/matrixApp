@@ -4,26 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dip"
-    tools:context=".ui.MainActivity"
-    >
+    android:background="@drawable/blue_border"
+    tools:context=".ui.MainActivity">
 
     <FrameLayout
         android:id="@+id/fragment_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/blue_border"
         android:orientation="vertical"
-
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/blue_border"
         app:layout_constraintHeight_percent="0.8"
-        />
-    <FrameLayout
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_settings"
         android:layout_width="match_parent"
         android:layout_height="0.dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintTop_toBottomOf="@id/fragment_frame"
-        >
-    </FrameLayout>
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/fragment_frame">
+
+        <TextView
+            android:id="@+id/main_settings_text"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.4"
+            android:background="@drawable/blue_border_gray_text"
+            android:layout_marginVertical="10dp"
+
+            app:layout_constraintTop_toTopOf="@id/main_settings" />
+
+        <Button
+            android:id="@+id/main_button_prev"
+            android:layout_width="0.dp"
+            android:layout_height="50dp"
+            android:text="previous"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/border"
+
+            app:layout_constraintTop_toBottomOf="@id/main_settings_text"
+            app:layout_constraintStart_toStartOf="@id/main_settings"
+            app:layout_constraintWidth_percent="0.5"
+            />
+
+        <Button
+            android:id="@+id/main_button_next"
+            android:layout_width="0.dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/main_settings_text"
+            android:background="@drawable/border"
+            android:text="next"
+            app:layout_constraintEnd_toEndOf="@id/main_settings"
+            app:layout_constraintStart_toEndOf="@id/main_button_prev" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

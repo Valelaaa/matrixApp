@@ -9,8 +9,8 @@ class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
     private var matrix: Array<IntArray> = Array(rows) { IntArray(columns) { 0 } }
 
     init {
-        Log.d(tag, "New instance of Input Matrix created ${this.getReference()}")
         initializeMatrix()
+        Log.d(tag, "New instance of Input Matrix created $this")
     }
 
     private fun initializeMatrix() {
@@ -32,12 +32,11 @@ class InputMatrix(val columns: Int = 10, val rows: Int = 10) {
 
     fun getData(): Array<IntArray> = matrix
     override fun toString(): String {
-        return matrix.joinToString(separator = "\n") {
+        return matrix.joinToString(separator = "\n") { it ->
             it.joinToString(", "){
                 "$it"
             }
         }
-        return ""
     }
     private fun getReference():String{
        return Integer.toHexString(System.identityHashCode(this))

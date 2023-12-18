@@ -24,7 +24,7 @@ class MatrixRepositoryImpl @Inject constructor() : MatrixRepository {
         _matrixFlow.update { createNewMatrix() }
     }
     private fun createNewMatrix(): InputMatrix {
-        return InputMatrix((10..100).random(), (10..100).random());
+        return InputMatrix((99..100).random(), (99..100).random());
     }
 
     override fun getMatrix(): Flow<InputMatrix> = matrixFlow
