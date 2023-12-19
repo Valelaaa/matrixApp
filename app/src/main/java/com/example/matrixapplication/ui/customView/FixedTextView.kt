@@ -3,18 +3,17 @@ package com.example.matrixapplication.ui.customView
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
-import androidx.compose.ui.graphics.PathEffect
-import java.util.regex.Pattern
-
+import kotlin.math.max
 
 private const val NUMBER_SEPARATOR = " "
+private const val NUMBER_SYMBOL = "9"
 
 private const val HORIZONTAL_MARGIN = 20
 private const val VERTICAL_MARGIN = 20
+private const val GROUP_COUNT = 6
 
 class FixedTextView : View {
     private val paint: Paint by lazy {
@@ -25,49 +24,67 @@ class FixedTextView : View {
             textAlign = Paint.Align.LEFT
         }
     }
-    private var textLine: String = ""
-    private val textBounds = Rect()
+    private var input: IntArray = IntArray(0)
+
+    private val rect = Rect()
+
+    private val separatorWidth: Int by lazy {
+        paint.getTextBounds(NUMBER_SEPARATOR, 0, NUMBER_SEPARATOR.length, rect)
+        rect.width()
+    }
+
+    private val symbolWidth: Int by lazy {
+        paint.getTextBounds(NUMBER_SYMBOL, 0, NUMBER_SYMBOL.length, rect)
+        rect.width()
+    }
+
+    private val symbolHeight: Int by lazy {
+        paint.getTextBounds(NUMBER_SYMBOL, 0, NUMBER_SYMBOL.length, rect)
+        val symbolHeight = rect.height()
+        paint.getTextBounds(NUMBER_SEPARATOR, 0, NUMBER_SEPARATOR.length, rect)
+        val separatorHeight = rect.height()
+        max(symbolHeight, separatorHeight)
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     fun setLine(input: IntArray) {
-        textLine = input.joinToString(separator = NUMBER_SEPARATOR) {
-            it.toString().padStart(5, 'S')
-        }
+        this.input = input
         requestLayout()
         invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val mode = MeasureSpec.getMode(widthMeasureSpec)
-        val size = MeasureSpec.getSize(widthMeasureSpec)
-
-        calculateTextBounds()
-
+        val width = calculateBoundsWidth()
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(
-                textBounds.width() + 2 * HORIZONTAL_MARGIN,
+                width + 2 * HORIZONTAL_MARGIN,
                 MeasureSpec.EXACTLY
             ),
             MeasureSpec.makeMeasureSpec(
-                textBounds.height() + 2 * VERTICAL_MARGIN,
+                symbolHeight + 2 * VERTICAL_MARGIN,
                 MeasureSpec.EXACTLY
             ),
         )
     }
 
-    private fun calculateTextBounds() {
-        paint.getTextBounds(textLine, 0, textLine.length - 1, textBounds)
+    private fun calculateBoundsWidth(): Int {
+        val numberCount = input.size
+        val separatorCounts = max(numberCount - 1, 0)
+        return numberCount * GROUP_COUNT * symbolWidth + separatorCounts * separatorWidth
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawText(
-            textLine,
-            HORIZONTAL_MARGIN.toFloat(),
-            (height - textBounds.height()) / 1f,
-            paint
-        )
+        val aInput = this.input
+        var leftOffset = 0f
+        aInput.forEach { number ->
+            val numberAsString = number.toString()
+            val emptySymbols = GROUP_COUNT - numberAsString.length
+            val offset = if (emptySymbols > 0) emptySymbols * symbolWidth else 0
+            canvas.drawText(numberAsString, leftOffset + offset, height / 2f, paint)
+            leftOffset += GROUP_COUNT * symbolWidth + separatorWidth
+        }
     }
 }
