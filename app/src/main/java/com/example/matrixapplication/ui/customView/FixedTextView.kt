@@ -4,18 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.text.Highlights
 import android.util.AttributeSet
 import android.view.View
 import kotlin.math.max
 
-private const val NUMBER_SEPARATOR = " "
-private const val NUMBER_SYMBOL = "9"
-
-private const val HORIZONTAL_MARGIN = 20
-private const val VERTICAL_MARGIN = 20
-private const val GROUP_COUNT = 6
-
-class FixedTextView : View {
+open class FixedTextView : View {
     private val paint: Paint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = 0xFF000000.toInt()
@@ -24,8 +18,21 @@ class FixedTextView : View {
             textAlign = Paint.Align.LEFT
         }
     }
-    private var input: IntArray = IntArray(0)
+    private val redPaint =
+        Paint().apply { color = 0x70FFC107.toInt() }
 
+    companion object {
+        private const val NUMBER_SEPARATOR = " "
+        private const val NUMBER_SYMBOL = "9"
+        private const val HIGHLIGHTS_OFF = -1
+
+        private const val HORIZONTAL_MARGIN = 20
+        private const val VERTICAL_MARGIN = 20
+        internal const val GROUP_COUNT = 6
+    }
+
+    private var input: IntArray = IntArray(0)
+    private var highLightPosition: Int = -1
     private val rect = Rect()
 
     private val separatorWidth: Int by lazy {
@@ -49,8 +56,9 @@ class FixedTextView : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    fun setLine(input: IntArray) {
+    fun setLine(input: IntArray, highlightPosition: Int = -1) {
         this.input = input
+        this.highLightPosition = highlightPosition
         requestLayout()
         invalidate()
     }
@@ -79,12 +87,38 @@ class FixedTextView : View {
         super.onDraw(canvas)
         val aInput = this.input
         var leftOffset = 0f
+        if (highLightPosition != HIGHLIGHTS_OFF) {
+            aInput.apply {
+                val startPosition =
+                    (highLightPosition * symbolWidth * GROUP_COUNT).toFloat() + symbolWidth
+                val endPosition = startPosition + GROUP_COUNT * symbolWidth
+                canvas.drawRect(
+                    startPosition,
+                    0f,
+                    endPosition,
+                    height.toFloat(),
+                    redPaint
+                )
+                canvas.drawLine(0f, 0f, endPosition, 0f, paint)
+                canvas.drawLine(
+                    0f,
+                    height.toFloat(),
+                    endPosition,
+                    height.toFloat(),
+                    paint
+                )
+            }
+        }
         aInput.forEach { number ->
             val numberAsString = number.toString()
             val emptySymbols = GROUP_COUNT - numberAsString.length
             val offset = if (emptySymbols > 0) emptySymbols * symbolWidth else 0
             canvas.drawText(numberAsString, leftOffset + offset, height / 2f, paint)
             leftOffset += GROUP_COUNT * symbolWidth + separatorWidth
+            val lineOffSet = leftOffset + symbolWidth
+            canvas.drawLine(lineOffSet, 0f, lineOffSet, height.toFloat(), paint)
         }
+
     }
+
 }

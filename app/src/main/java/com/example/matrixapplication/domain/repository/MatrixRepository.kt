@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface MatrixRepository {
     fun refreshMatrix()
     fun getMatrix(): Flow<InputMatrix>
+    fun findFirstIndexes(element:Int): Pair<Int, Int>?
 }

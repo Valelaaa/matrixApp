@@ -1,195 +1,31 @@
 package com.example.matrixapplication.ui
 
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.compose.ui.graphics.Color
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.matrixapplication.R
 import com.example.matrixapplication.databinding.RecycleViewLotofCustomTextviewItemBinding
-import com.example.matrixapplication.databinding.RecycleViewLotofTextviewItemBinding
 import com.example.matrixapplication.domain.InputMatrix
 import com.example.matrixapplication.ui.PrimaryRVAdaptor.ConstraintRowHolder
 
-private const val NUMBER_SEPARATOR = " "
-private val BACKGROUND_COLOR = 0xFFFFFFFF.toInt()
-private val FONT_COLOR = 0xFF000000.toInt()
-private const val GROUP_SIZE = 5
-
-private const val TAG = "Update Matrix Functions"
-
-private fun SpannableStringBuilder.appendAndSpan(
-    what: CharSequence,
-    spanStyle: Any,
-    spannableFlag: Int = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-): SpannableStringBuilder = this.apply {
-    val start = length
-    append(what)
-
-
-
-
-    setSpan(spanStyle, start, length, spannableFlag)
-}
-
-fun setSpannableString(matrix: IntArray): CharSequence {
-    val tempSeparator = 'S'
-
-    val rawString = matrix.joinToString(NUMBER_SEPARATOR) {
-        val spStr = SpannableString(it.toString())
-        spStr.setSpan(
-            ForegroundColorSpan(FONT_COLOR),
-            0,
-            it.toString().length,
-            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
-
-        spStr.padStart(5, tempSeparator)
-//        it.toString().padStart(5, tempSeparator)
-    }
-    val sb = SpannableStringBuilder(rawString)
-    var p1 = 0 // [p1, p2] s
-    var p2 = 0 // [p2, p1] digits
-    val backgroundColorSpannable = ForegroundColorSpan(BACKGROUND_COLOR)
-    val foregroundColorSpan = ForegroundColorSpan(FONT_COLOR)
-
-
-    rawString.forEachIndexed { index, c ->
-        if (c == tempSeparator) {
-            if (p2 >= p1) {
-                p2++
-            } else {
-                // set black color
-                sb.setSpan(
-                    ForegroundColorSpan(FONT_COLOR),
-                    p2,
-                    p1,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                )
-                p2 = p1
-            }
-        } else {
-            if (p2 <= p1) {
-                p1++
-            } else {
-                // set white color
-                sb.setSpan(
-                    ForegroundColorSpan(BACKGROUND_COLOR),
-                    p1,
-                    p2,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                )
-                p1 = p2
-            }
-        }
-
-    }
-
-
-    return sb
-
-
-//
-//
-
-//    val filtered = sb.filter { it == tempSeparator }
-
-    val sb2 = SpannableStringBuilder()
-
-    val coloredSequence = SpannableString(tempSeparator as String)
-
-    val backgroundColorSpan = ForegroundColorSpan(BACKGROUND_COLOR)
-    coloredSequence.setSpan(
-        backgroundColorSpan,
-        0,
-        coloredSequence.length,
-        Spannable.SPAN_INCLUSIVE_INCLUSIVE
-    )
-    val blackColorForegroundColorSpan = ForegroundColorSpan(FONT_COLOR)
-
-
-//    sb2.
-    matrix.forEachIndexed { index, i ->
-        if (index > 0) {
-            sb2.append(NUMBER_SEPARATOR)
-        }
-        val elementAsString = i.toString()
-        var count = 5 - elementAsString.length
-//        val startIndexS = sb2.length
-
-        val strBuild = StringBuilder()
-        while (count-- > 0) {
-//            sb2.append(coloredSequence)
-        }
-        sb2.appendAndSpan(
-            strBuild.toString(),
-            backgroundColorSpan,
-            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
-
-        sb2.appendAndSpan(
-            elementAsString,
-            blackColorForegroundColorSpan,
-            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
-
-
-//        val startIndex = sb2.length
-//
-//        sb2.append(elementAsString)
-//        sb2.setSpan(
-//            blackColorForegroundColorSpan,
-//            startIndex,
-//            sb2.length,
-//            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-//        )
-
-//            .let {
-//            SpannableString(it).apply {
-//                setSpan(
-//                    blackColorForegroundColorSpan,
-//                    0,
-//                    it.length,
-//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//                )
-//            } )
-
-    }
-    return sb2
-}
-
-private class TextViewImplementation(private val binding: RecycleViewLotofTextviewItemBinding) :
-    ConstraintRowHolder(view = binding.root) {
-
-    override fun bind(array: IntArray) {
-        binding.recycleViewTextviewItem.text = setSpannableString(array)
-    }
-}
-
 private class CustomViewImplementation(private val binding: RecycleViewLotofCustomTextviewItemBinding) :
     ConstraintRowHolder(binding.root) {
-    override fun bind(array: IntArray) {
-        binding.recycleViewCustomTextviewItem.setLine(array)
+    override fun bind(array: IntArray, highlighted: Int, col: Int) {
+        binding.recycleViewCustomTextviewItem.setLine(array, col)
+        if (highlighted != -1){
+            binding.root.setBackgroundColor(0xC6FFC107.toInt())
+        }
+        else{
+            binding.root.setBackgroundColor(0x00000000.toInt())
+        }
     }
-}
-
-private val factory = object : ConstraintRowHolder.Factory {
-
-    override fun create(view: ViewGroup, viewType: Int): ConstraintRowHolder =
-        TextViewImplementation(
-            RecycleViewLotofTextviewItemBinding.inflate(
-                LayoutInflater.from(view.context),
-                view,
-                false
-            )
-        )
 }
 
 private val factory2 = object : ConstraintRowHolder.Factory {
@@ -203,6 +39,21 @@ private val factory2 = object : ConstraintRowHolder.Factory {
         )
 }
 
+internal fun paintMatrixPosition(recyclerView: RecyclerView, row: Int, column: Int) {
+    (recyclerView.adapter as? PrimaryRVAdaptor)?.apply {
+        highLightElementByPosition(row, column)
+
+        if(row >= 0 && column >= 0){
+            val columnWidth = recyclerView.width / getColumnsCount()
+
+            recyclerView.post {
+                recyclerView.layoutManager?.scrollToPosition(row)
+                (recyclerView.parent as HorizontalScrollView).scrollX = (column - 1) * columnWidth
+            }
+        }
+    }
+
+}
 
 internal fun updateMatrixTableView(
     matrix: InputMatrix,
@@ -235,7 +86,6 @@ fun updateMatrixTableView(
             textView.setBackgroundResource(R.drawable.border)
             tableRow.addView(textView)
             textView.id = (j * matrix.columns + i)
-
         }
         matrixTable.addView(tableRow)
     }

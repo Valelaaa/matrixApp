@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class MatrixRepositoryImpl @Inject constructor() : MatrixRepository {
+open class MatrixRepositoryImpl @Inject constructor() : MatrixRepository {
     private val tag = "MatrixRepositoryImpl"
 
-    private val _matrixFlow = MutableStateFlow(createNewMatrix())
+    protected val _matrixFlow = MutableStateFlow(createNewMatrix())
 
-    private val matrixFlow = _matrixFlow.asStateFlow()
+    protected val matrixFlow = _matrixFlow.asStateFlow()
 
     init {
         Log.d(tag, "MatrixRepository created $this")
@@ -24,8 +24,12 @@ class MatrixRepositoryImpl @Inject constructor() : MatrixRepository {
         _matrixFlow.update { createNewMatrix() }
     }
     private fun createNewMatrix(): InputMatrix {
-        return InputMatrix((99..100).random(), (99..100).random());
+        return InputMatrix((10..100).random(), (10..100).random());
     }
 
+
     override fun getMatrix(): Flow<InputMatrix> = matrixFlow
+    override fun findFirstIndexes(element: Int): Pair<Int, Int>? {
+        return matrixFlow.value.findFirst(element)
+    }
 }
